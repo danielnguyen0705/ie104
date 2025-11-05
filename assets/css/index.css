@@ -78,27 +78,7 @@ body.dark-mode .home-section-sub {
   border-radius: var(--radius);
 }
 
-/* Main content container for index page */
-.home-main {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  background: #fff;
-  border-radius: 12px 12px 0 0;
-  box-shadow: 0 -6px 14px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  padding-bottom: 24px;
-  overflow-y: auto;
-  min-height: 0;
-}
-
-/* Khi Queue hiển thị, ẩn phần main content (chỉ trang index có .home-main) */
-body.queue-open .home-main,
-.content:has(#queue:not(.hidden)) .home-main {
-  display: none !important;
-}
-
-#hero-carousel .q-banner {
+.q-banner {
   position: absolute;
   inset: 0;
   display: flex;
@@ -106,20 +86,14 @@ body.queue-open .home-main,
   justify-content: flex-start;
   opacity: 0;
   transition: opacity 1s ease-in-out;
-  /* override global queue banner look */
-  background: transparent !important;
-  border: 0 !important;
-  padding: 0 !important;
-  border-radius: var(--radius) !important;
-  height: 100% !important;
 }
 
-#hero-carousel .q-banner:not(.hidden) {
+.q-banner:not(.hidden) {
   opacity: 1;
   z-index: 2;
 }
 
-#hero-carousel .q-banner-inner {
+.q-banner-inner {
   display: flex;
   align-items: center;
   width: 100%;
@@ -133,7 +107,7 @@ body.queue-open .home-main,
   color: #fff;
 }
 
-#hero-carousel .q-banner-cover img {
+.q-banner-cover img {
   height: 400px;
   width: 400px;
   object-fit: cover;
@@ -142,32 +116,32 @@ body.queue-open .home-main,
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
-#hero-carousel .q-banner-text {
+.q-banner-text {
   margin-left: 60px;
   max-width: 600px;
 }
 
-#hero-carousel .b-title {
+.b-title {
   font-size: 2.2rem;
   font-weight: 800;
   margin-bottom: 12px;
 }
 
-#hero-carousel .b-artist {
+.b-artist {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
 }
 
-#hero-carousel .b-artist-avatar {
+.b-artist-avatar {
   width: 48px;
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-#hero-carousel .b-artist-name {
+.b-artist-name {
   font-weight: 600;
 }
 
@@ -1019,11 +993,11 @@ body, .playlist-card, .album-card, .artist-card {
   .hero-carousel {
     height: 320px;
   }
-  #hero-carousel .q-banner-cover img {
+  .q-banner-cover img {
     width: 300px;
     height: 300px;
   }
-  #hero-carousel .q-banner-text {
+  .q-banner-text {
     margin-left: 30px;
   }
   .playlist-thumb img,
@@ -1039,10 +1013,10 @@ body, .playlist-card, .album-card, .artist-card {
   .hero-carousel {
     height: 280px;
   }
-  #hero-carousel .q-banner-cover img {
+  .q-banner-cover img {
     display: none;
   }
-  #hero-carousel .q-banner-text {
+  .q-banner-text {
     margin-left: 20px;
   }
   .playlist-row,
@@ -1062,7 +1036,7 @@ body, .playlist-card, .album-card, .artist-card {
   .hero-carousel {
     height: 220px;
   }
-  #hero-carousel .b-title {
+  .b-title {
     font-size: 1.3rem;
   }
   .hero-actions .btn {

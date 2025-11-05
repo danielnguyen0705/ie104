@@ -1,7 +1,6 @@
 // -------- 2. HERO CAROUSEL AUTO SLIDE --------
-const hero = document.getElementById('hero-carousel');
-const banners = hero ? hero.querySelectorAll('.q-banner') : [];
-const dots = hero ? hero.querySelectorAll('.hero-dot') : [];
+const banners = document.querySelectorAll('.q-banner');
+const dots = document.querySelectorAll('.hero-dot');
 let currentIndex = 0;
 
 function showBanner(index) {
@@ -30,8 +29,7 @@ if (banners.length > 0) {
 
 // -------- 3. PLAY BUTTON INTERACTION (Mock) --------
 function setupPlayButtons() {
-  const scope = document;
-  const buttons = scope.querySelectorAll(
+  const buttons = document.querySelectorAll(
     '.playlist-play, .album-play, .track-play-btn'
   );
   buttons.forEach((btn) => {
