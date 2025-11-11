@@ -1,86 +1,110 @@
 /* Nghe Gan Day page (renamed from played.css) */
 /* Layout overrides to allow scrolling under fixed player */
-html,
-body {
-  height: auto !important;
+body.page-nghe-gan-day {
   min-height: 100vh;
-  overflow-y: auto !important;
+  overflow-y: auto;
+  background-color: #f5f7fa;
 }
-.wrap {
+.page-nghe-gan-day .wrap {
   height: auto;
+  max-width: 100%;
+  overflow-x: hidden;
 }
-.content {
-  overflow: visible !important;
+.page-nghe-gan-day .content {
+  overflow: visible;
   min-height: 0;
+  padding: 0;
 }
-.played-main {
-  padding: 24px 28px;
+.page-nghe-gan-day .played-main {
+  padding: 20px 16px;
   background: #fff;
   border-radius: 12px 12px 0 0;
   box-shadow: 0 -6px 14px rgba(0,0,0,0.1);
+  margin: 0 auto;
+  max-width: 1200px;
+  width: 100%;
+  box-sizing: border-box;
   height: auto;
   min-height: 0;
   overflow-y: auto;
   scrollbar-width: none;
-  padding-bottom: calc(var(--player-h, 96px) + 24px);
+  /* Chỉ chừa đúng khoảng cho player (động), cộng nhẹ 4px cho an toàn */
+  padding-bottom: calc(var(--player-bottom-space, calc(var(--player-h) + var(--player-safe))) + 4px);
 }
-.page-header {
+.page-nghe-gan-day .page-header {
   margin-bottom: 18px;
 }
-.page-header .title-xl {
+.page-nghe-gan-day .page-header .title-xl {
   font-size: 28px;
   font-weight: 800;
   color: #1f5f8b;
 }
-.page-header .sub-row {
+.page-nghe-gan-day .page-header .sub-row {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-top: 8px;
 }
-.page-header .sub-row .dot {
+.page-nghe-gan-day .page-header .sub-row .dot {
   width: 12px;
   height: 12px;
   border-radius: 50%;
   background: #2ba6df;
   box-shadow: 0 0 0 4px rgba(43,166,223,0.15);
 }
-.page-header .title-lg {
+.page-nghe-gan-day .page-header .title-lg {
   font-size: 20px;
   font-weight: 700;
 }
 
-.played-table {
+.page-nghe-gan-day .played-table {
   background: rgba(255,255,255,0.7);
   border-radius: 14px;
   padding: 8px 6px;
 }
-.pt-head, .pt-row {
+.page-nghe-gan-day .pt-head, .page-nghe-gan-day .pt-row {
   display: grid;
-  grid-template-columns: 48px 1.5fr 1fr 72px;
+  grid-template-columns: 40px 1.5fr 1fr 60px;
   align-items: center;
   column-gap: 12px;
-  padding: 10px 12px;
+  padding: 8px 4px;
+  min-width: 0; /* Prevent grid overflow */
+  box-sizing: border-box;
 }
-.pt-head {
+
+.page-nghe-gan-day .pt-body .pt-col.time {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95em;
+  letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-feature-settings: "tnum";
+  font-feature-settings: "tnum";
+}
+
+.page-nghe-gan-day .pt-col.time {
+  text-align: right;
+  padding-right: 8px;
+  min-width: 40px;
+}
+.page-nghe-gan-day .pt-head {
   color: #7f8b99;
   font-weight: 700;
 }
-.pt-body {
+.page-nghe-gan-day .pt-body {
   display: block;
 }
-.pt-row {
+.page-nghe-gan-day .pt-row {
   border-radius: 10px;
 }
-.pt-row:hover {
+.page-nghe-gan-day .pt-row:hover {
   background: rgba(43,166,223,0.08);
 }
-.pt-col.track {
+.page-nghe-gan-day .pt-col.track {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-.pt-cover {
+.page-nghe-gan-day .pt-cover {
   width: 42px;
   height: 42px;
   border-radius: 8px;
@@ -88,18 +112,99 @@ body {
   background-position: center;
   flex: 0 0 42px;
 }
-.pt-title {
+.page-nghe-gan-day .pt-title {
   color: #1666b2;
   font-weight: 700;
 }
-.pt-artist {
+.page-nghe-gan-day .pt-artist {
   color: #7f8b99;
   font-size: 14px;
 }
 
 @media (max-width: 900px) {
-  .pt-head, .pt-row {
-    grid-template-columns: 36px 1fr 100px;
+  .page-nghe-gan-day .played-main {
+    padding: 16px 8px;
   }
-  .pt-col.artist { display:none; }
+
+  .page-nghe-gan-day .pt-head, 
+  .page-nghe-gan-day .pt-row {
+    grid-template-columns: 30px 1fr 50px;
+    padding: 8px 2px;
+    column-gap: 6px;
+    font-size: 14px;
+  }
+  
+  .page-nghe-gan-day .pt-col.artist { 
+    display: none; 
+  }
+  
+  .page-nghe-gan-day .pt-body .pt-col.time {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-feature-settings: "tnum";
+    font-feature-settings: "tnum";
+  }
+  
+  .page-nghe-gan-day .pt-col.time {
+    text-align: right;
+    padding-right: 8px;
+    white-space: nowrap;
+    min-width: 36px;
+  }
+  
+  .page-nghe-gan-day .pt-cover {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+  
+  .page-nghe-gan-day .pt-title {
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  
+  .page-nghe-gan-day .pt-artist {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  
+  .page-nghe-gan-day .pt-col.track {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  
+  .page-nghe-gan-day .pt-col.idx {
+    padding-left: 2px;
+    text-align: center;
+    min-width: 30px;
+  }
+}
+
+/* When Queue is open, let global style.css take full control */
+body.queue-open.page-nghe-gan-day .content {
+  height: 100vh;
+  overflow: auto;
+}
+body.queue-open.page-nghe-gan-day .played-main { padding-bottom: 0; }
+/* Hide main list entirely when Queue is visible */
+body.queue-open.page-nghe-gan-day .played-main { display: none; }
+.page-nghe-gan-day .content:has(.queue:not(.hidden)) .played-main { display: none; }
+
+/* Override padding đáy từ global cho phần main trong trang này */
+.page-nghe-gan-day .content > main {
+  padding-bottom: calc(var(--player-bottom-space, calc(var(--player-h) + var(--player-safe))) + 4px) !important;
+}
+
+/* Giảm đệm đáy sidebar riêng cho trang này */
+.page-nghe-gan-day .sidebar {
+  padding-bottom: calc(8px + var(--player-bottom-space, calc(var(--player-h) + var(--player-safe)))) !important;
 }
