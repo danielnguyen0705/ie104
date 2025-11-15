@@ -3,6 +3,7 @@
   const ytTbody = document.getElementById('yt-body');
   const playlistCover = document.querySelector('.playlist-cover img');
   const playlistSub = document.querySelector('.playlist .playlist-sub');
+  const playlistTitle = document.querySelector('.playlist .playlist-title');
 
   if (!ytTbody) return;
 
@@ -13,6 +14,28 @@
     } catch {
       return [];
     }
+  }
+
+  function getNameKey() {
+    try {
+      const u = JSON.parse(localStorage.getItem('auth_user') || 'null');
+      if (u && (u.id || u.email)) return `displayname_${u.id || u.email}`;
+    } catch {}
+    return 'displayname_guest';
+  }
+  function getDisplayName() {
+    try {
+      const s = localStorage.getItem(getNameKey());
+      return s && s.trim() ? s.trim() : '';
+    } catch {
+      return '';
+    }
+  }
+  function setFavTitle() {
+    if (!playlistTitle) return;
+    const name = getDisplayName();
+    const fallback = 'bạn';
+    playlistTitle.textContent = `Yêu thích của ${name || fallback}`;
   }
 
   function saveLiked(list) {
@@ -26,18 +49,24 @@
     const list = loadLiked();
     ytTbody.innerHTML = '';
     list.forEach((t, i) => {
-      const tr = document.createElement('tr');
-      tr.setAttribute('data-track-index', String(i));
-      tr.innerHTML = `
-        <td>${i + 1}</td>
-        <td class="song-title"><img src="${t.cover || ''}" alt="${t.title || ''}"><span>${t.title || ''}</span></td>
-        <td>${t.artist || ''}</td>
-        <td><span class="dur">${t.duration || '--:--'}</span> <button class="remove-btn" title="Xóa">Xóa</button></td>`; // Nút Xóa nằm trong cột Thời lượng
-      tr.style.cursor = 'pointer';
+      const row = document.createElement('div');
+      row.className = 'pt-row';
+      row.setAttribute('role', 'row');
+      row.setAttribute('data-track-index', String(i));
+      row.innerHTML = `
+        <div class="pt-col idx">${i + 1}</div>
+        <div class="pt-col track">
+          <div class="pt-cover" style="background-image:url('${t.cover || ''}')"></div>
+          <div>
+            <div class="pt-title">${t.title || ''}</div>
+          </div>
+        </div>
+        <div class="pt-col artist">${t.artist || ''}</div>
+        <div class="pt-col time">${t.duration || '--:--'}</div>`;
+      row.style.cursor = 'pointer';
 
-      // Click vào dòng để play nhạc, nhưng bỏ qua nút Xóa
-      tr.addEventListener('click', (e) => {
-        if (e.target.classList.contains('remove-btn')) return;
+      // Click vào dòng để play nhạc
+      row.addEventListener('click', (e) => {
         if (window.MusicBox && typeof window.MusicBox.playAt === 'function') {
           const playlist = window.MusicBox.playlist();
           const idx = Array.isArray(playlist) ? playlist.findIndex(x => x && x.id === t.id) : -1;
@@ -45,15 +74,7 @@
         }
       });
 
-      // Click nút Xóa
-      tr.querySelector('.remove-btn').addEventListener('click', () => {
-        let liked = loadLiked();
-        liked = liked.filter(s => s.id !== t.id);
-        saveLiked(liked);
-        renderLiked();
-      });
-
-      ytTbody.appendChild(tr);
+      ytTbody.appendChild(row);
     });
 
     // Update số lượng bài
@@ -106,6 +127,9 @@
   }
 
   // Render khi trang load và khi có thay đổi danh sách thích
-  document.addEventListener('DOMContentLoaded', renderLiked);
+  document.addEventListener('DOMContentLoaded', () => {
+    renderLiked();
+    setFavTitle();
+  });
   window.addEventListener('liked:changed', renderLiked);
 })();
