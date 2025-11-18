@@ -89,17 +89,15 @@ function updatePlayerBottomSpace() {
  * @returns {string} Avatar key
  */
 function getAvatarKey() {
-    return (
-        safeExecute(() => {
-            const userData = JSON.parse(
-                localStorage.getItem(STORAGE_KEYS.AUTH_USER) || "null"
-            );
-            if (userData && (userData.id || userData.email)) {
-                return `avatar_${userData.id || userData.email}`;
-            }
-            return "avatar_guest";
-        }, "getAvatarKey") ?? "avatar_guest"
-    );
+    return safeExecute(() => {
+        const userData = JSON.parse(
+            localStorage.getItem(STORAGE_KEYS.AUTH_USER) || "null"
+        );
+        if (userData && (userData.id || userData.email)) {
+            return `avatar_${userData.id || userData.email}`;
+        }
+        return "avatar_guest";
+    }, "getAvatarKey") ?? "avatar_guest";
 }
 
 /**
@@ -109,7 +107,7 @@ function applyHeaderAvatar() {
     safeExecute(() => {
         const profileButton = document.querySelector(".profile-btn");
         if (!profileButton) return;
-
+        
         const avatarData = localStorage.getItem(getAvatarKey());
         if (avatarData) {
             profileButton.classList.add("has-avatar");
@@ -133,9 +131,9 @@ function setQueueVisible(show, fromPopState = false, shouldFocus = true) {
     const playlistSection = document.querySelector(".playlist");
     const recentButton = document.querySelector(".menu-btn.recent");
     const queueTitle = document.querySelector(".q-title");
-
+    
     if (!queuePanel) return;
-
+    
     queuePanel.classList.toggle("hidden", !show);
     if (playlistSection) {
         playlistSection.classList.toggle("hidden", show);
@@ -144,7 +142,7 @@ function setQueueVisible(show, fromPopState = false, shouldFocus = true) {
     if (recentButton) {
         recentButton.setAttribute("aria-expanded", String(show));
     }
-
+    
     // Focus management
     if (show) {
         if (queueTitle && !queueTitle.hasAttribute("tabindex")) {
@@ -157,12 +155,12 @@ function setQueueVisible(show, fromPopState = false, shouldFocus = true) {
             recentButton?.focus();
         }
     }
-
+    
     // Toggle body state class for CSS targeting
     safeExecute(() => {
         document.body.classList.toggle("queue-open", !!show);
     }, "setQueueVisible:toggleBodyClass");
-
+    
     if (!fromPopState && window.__mbPushUIState) {
         window.__mbPushUIState();
     }
@@ -171,19 +169,16 @@ function setQueueVisible(show, fromPopState = false, shouldFocus = true) {
     }
 }
 
-// Store playerContext in module scope to make it accessible to all functions
-let modulePlayerContext = null;
-
 /**
  * Pushes current UI state to history
  */
 function pushUIState() {
     const queuePanel = document.getElementById("queue");
     const state = {
-        index: modulePlayerContext ? modulePlayerContext.getCurrentIndex() : 0,
+        index: playerContext.getCurrentIndex(),
         queueOpen: isQueueOpen(queuePanel),
     };
-
+    
     safeExecute(() => {
         history.pushState(state, "");
     }, "pushUIState");
@@ -196,7 +191,7 @@ function pushUIState() {
 function getUIState() {
     const queuePanel = document.getElementById("queue");
     return {
-        index: modulePlayerContext ? modulePlayerContext.getCurrentIndex() : 0,
+        index: playerContext.getCurrentIndex(),
         queueOpen: isQueueOpen(queuePanel),
     };
 }
@@ -253,13 +248,9 @@ function setupProfileDropdown(go, signOut) {
     profileButton.addEventListener("click", () => {
         const isOpen = profileMenu.classList.toggle("open");
         profileMenu.setAttribute("aria-hidden", String(!isOpen));
-
+        
         if (isOpen) {
-            document.addEventListener(
-                "click",
-                handleProfileDocumentClick,
-                true
-            );
+            document.addEventListener("click", handleProfileDocumentClick, true);
             document.addEventListener("keydown", handleProfileEscape, true);
         } else {
             closeProfileMenu();
@@ -272,8 +263,7 @@ function setupProfileDropdown(go, signOut) {
             closeProfileMenu();
             safeExecute(() => {
                 go(PROFILE_PAGE);
-            }, "setupProfileDropdown:go") ??
-                (window.location.href = PROFILE_PAGE);
+            }, "setupProfileDropdown:go") ?? (window.location.href = PROFILE_PAGE);
         });
     }
 
@@ -305,7 +295,7 @@ function applyPremiumState(premiumButton, isEnabled) {
 function setupPremiumButton() {
     const premiumButton = document.querySelector(".premium-btn");
     if (!premiumButton) return;
-
+    
     // Initialize from storage
     safeExecute(() => {
         const saved = localStorage.getItem(STORAGE_KEYS.PREMIUM_ENABLED);
@@ -313,22 +303,22 @@ function setupPremiumButton() {
             applyPremiumState(premiumButton, saved === "true");
         }
     }, "setupPremiumButton:init");
-
+    
     // Toggle on click
     premiumButton.addEventListener("click", () => {
         const currentState =
             premiumButton.getAttribute("aria-pressed") === "true";
         const newState = !currentState;
-
+        
         applyPremiumState(premiumButton, newState);
-
+        
         safeExecute(() => {
             localStorage.setItem(
                 STORAGE_KEYS.PREMIUM_ENABLED,
                 String(newState)
             );
         }, "setupPremiumButton:save");
-
+        
         // Stop ad if premium is activated during ad playback
         if (newState && window.__mbIsAdPlaying && window.__mbIsAdPlaying()) {
             safeExecute(() => {
@@ -390,7 +380,7 @@ function go(url) {
     safeExecute(() => {
         document.body.classList.add("page-exit");
     }, "go:addExitClass");
-
+    
     setTimeout(() => {
         window.location.href = url;
     }, PAGE_EXIT_DELAY);
@@ -402,14 +392,14 @@ function go(url) {
 function updateNavigationButtons() {
     const backButton = document.getElementById("nav-back");
     const forwardButton = document.getElementById("nav-forward");
-
+    
     if (backButton) {
         // Check if we can go back (history.length > 1 means there's history to go back to)
         // However, a more reliable way is to track navigation state
         // For now, we'll enable/disable based on a simple check
         backButton.disabled = false;
     }
-
+    
     if (forwardButton) {
         // Forward button state is harder to determine without tracking
         // We'll enable it by default and let the browser handle it
@@ -423,34 +413,34 @@ function updateNavigationButtons() {
 function setupNavigationButtons() {
     const backButton = document.getElementById("nav-back");
     const forwardButton = document.getElementById("nav-forward");
-
+    
     // Setup back button
     if (backButton) {
         backButton.setAttribute("title", "Quay lại");
         backButton.setAttribute("aria-label", "Quay lại");
-
+        
         backButton.addEventListener("click", () => {
             safeExecute(() => {
                 history.back();
             }, "nav-back:click");
         });
     }
-
+    
     // Setup forward button
     if (forwardButton) {
         forwardButton.setAttribute("title", "Tiến tới");
         forwardButton.setAttribute("aria-label", "Tiến tới");
-
+        
         forwardButton.addEventListener("click", () => {
             safeExecute(() => {
                 history.forward();
             }, "nav-forward:click");
         });
     }
-
+    
     // Update button states on history changes
     window.addEventListener("popstate", updateNavigationButtons);
-
+    
     // Initial state update
     updateNavigationButtons();
 }
@@ -462,7 +452,7 @@ function setupNavigationButtons() {
 function ensureQueueCSS() {
     safeExecute(() => {
         if (document.getElementById("queue-visibility-style")) return;
-
+        
         const style = document.createElement("style");
         style.id = "queue-visibility-style";
         style.textContent = `
@@ -486,13 +476,7 @@ function ensureQueueCSS() {
  * @param {Object} options.playlistContext - Playlist context
  * @returns {Object} Layout context with public methods
  */
-export function setupLayoutHelpers({
-    signOut,
-    playerContext,
-    playlistContext,
-}) {
-    // Store playerContext in module scope
-    modulePlayerContext = playerContext;
+export function setupLayoutHelpers({ signOut, playerContext, playlistContext }) {
     // Initialize queue - hide by default (don't focus on initial load)
     setQueueVisible(false, false, false);
     ensureQueueCSS();
@@ -549,27 +533,27 @@ export function setupLayoutHelpers({
     window.addEventListener("popstate", (event) => {
         const state = event.state;
         if (!state) return;
-
-        if (modulePlayerContext && modulePlayerContext.loadTrack) {
-            modulePlayerContext.loadTrack(state.index);
+        
+        if (playerContext.loadTrack) {
+            playerContext.loadTrack(state.index);
         }
-
-        if (modulePlayerContext && modulePlayerContext.isCurrentlyPlaying()) {
-            modulePlayerContext.play();
-        } else if (modulePlayerContext && modulePlayerContext.setPlayUI) {
-            modulePlayerContext.setPlayUI(false);
+        
+        if (playerContext.isCurrentlyPlaying()) {
+            playerContext.play();
+        } else if (playerContext.setPlayUI) {
+            playerContext.setPlayUI(false);
         }
-
+        
         setQueueVisible(!!state.queueOpen, true);
-
-        if (modulePlayerContext && modulePlayerContext.savePlayerState) {
-            modulePlayerContext.savePlayerState(true);
+        
+        if (playerContext.savePlayerState) {
+            playerContext.savePlayerState(true);
         }
     });
 
     window.addEventListener("beforeunload", () => {
-        if (modulePlayerContext && modulePlayerContext.savePlayerState) {
-            modulePlayerContext.savePlayerState(true);
+        if (playerContext.savePlayerState) {
+            playerContext.savePlayerState(true);
         }
     });
 

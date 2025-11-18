@@ -1531,8 +1531,7 @@ input[type="range"]::-moz-range-thumb {
         width: 28px;
         height: 140px;
         -webkit-appearance: slider-vertical;
-        writing-mode: vertical-lr;
-        direction: rtl;
+        appearance: slider-vertical;
         background: rgba(127, 212, 249, 0.2);
         border-radius: 6px;
         padding: 4px 0;
